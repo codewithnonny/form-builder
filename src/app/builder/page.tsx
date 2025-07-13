@@ -34,7 +34,6 @@ export default function BuilderPage() {
     const { active, over } = event;
 
     if (over && over.id === "canvas-drop-zone" && draggedComponent) {
-      // Create default field configuration based on component type
       let defaultField: any = {
         type: draggedComponent.type,
         label: draggedComponent.label,
@@ -43,7 +42,6 @@ export default function BuilderPage() {
         style: { width: "full" as const },
       };
 
-      // Add options for selection components
       if (
         draggedComponent.type === "select" ||
         draggedComponent.type === "radio"
@@ -80,7 +78,7 @@ export default function BuilderPage() {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex h-screen">
-        <aside className="w-64 border-r border-black/5">
+        <aside className="w-64 border-r border-black/5 flex flex-col">
           <div className="flex items-center gap-2 bg-white text-black p-4 border-b border-black/5 h-16">
             <Sparkles className="w-4 h-4 text-primary" />
             <Link href="/" className="font-semibold">
@@ -94,12 +92,9 @@ export default function BuilderPage() {
         </main>
         {selectedFieldId && (
           <>
-            {/* Desktop Property Panel */}
             <div className="hidden lg:flex w-80 border-l border-border bg-card/30 backdrop-blur-sm">
               <PropertyPanel />
             </div>
-
-            {/* Mobile Property Panel - Full screen */}
             <div className="lg:hidden fixed inset-0 top-16 z-50 bg-background">
               <PropertyPanel />
             </div>
