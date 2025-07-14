@@ -13,6 +13,14 @@ export interface FormFieldOption {
   value: string;
 }
 
+export interface ValidationRule {
+  id: string;
+  type: "minLength" | "maxLength" | "pattern" | "custom";
+  value: string | number;
+  message: string;
+  enabled: boolean;
+}
+
 export interface FormField {
   id: string;
   type: FormFieldType;
@@ -20,12 +28,7 @@ export interface FormField {
   placeholder?: string;
   required: boolean;
   options?: FormFieldOption[];
-  validation?: {
-    minLength?: number;
-    maxLength?: number;
-    pattern?: string;
-    message?: string;
-  };
+  validationRules?: ValidationRule[];
   style?: {
     width: "full" | "half" | "third";
     margin?: "sm" | "md" | "lg";

@@ -13,8 +13,16 @@ import {
   GripVertical,
   Type,
   Palette,
+  Zap,
 } from "lucide-react";
 import { FormField } from "@/types/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 export function PropertyPanel() {
   const { fields, selectedFieldId, updateField } = useFormStore();
@@ -35,7 +43,7 @@ export function PropertyPanel() {
     );
   }
 
-  const handleUpdateField = (updates: Partial<FormField>) => {
+  const handleUpdateField = (updates: any) => {
     updateField(selectedField.id, updates);
   };
 
@@ -66,6 +74,35 @@ export function PropertyPanel() {
     handleUpdateField({ options: updatedOptions });
   };
 
+  const addValidationRule = () => {
+    const currentRules = selectedField.validationRules || [];
+    const newRule = {
+      id: Math.random().toString(36).substr(2, 9),
+      type: "",
+      value: "",
+      message: "",
+      enabled: true,
+    };
+
+    handleUpdateField({
+      validationRules: [...currentRules, newRule],
+    });
+  };
+
+  const updateValidationRule = (ruleId: string, updates: any) => {
+    const updatedRules = selectedField.validationRules?.map((rule) =>
+      rule.id === ruleId ? { ...rule, ...updates } : rule
+    );
+    handleUpdateField({ validationRules: updatedRules });
+  };
+
+  const removeValidationRule = (ruleId: string) => {
+    const updatedRules = selectedField.validationRules?.filter(
+      (rule) => rule.id !== ruleId
+    );
+    handleUpdateField({ validationRules: updatedRules });
+  };
+
   const hasOptions = ["select", "radio"].includes(selectedField.type);
 
   return (
@@ -74,9 +111,7 @@ export function PropertyPanel() {
         <div className="p-6 space-y-6">
           <Card className="p-4 glass-strong border-accent/20 bg-gradient-to-br from-accent/5 to-transparent fade-in-up">
             <div className="flex items-center space-x-3 mt-3">
-              <div className="p-2 rounded-md bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400">
-                {/* <IconComponent className="w-4 h-4" /> */}
-              </div>
+              <div className="p-2 rounded-md bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400"></div>
               <div>
                 <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100">
                   {selectedField.type.charAt(0).toUpperCase() +
@@ -228,6 +263,119 @@ export function PropertyPanel() {
               </div>
             </Card>
           )}
+
+          <Card
+            className="p-4 glass hover:glass-strong transition-all duration-300 fade-in-up"
+            style={{ animationDelay: "250ms" }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-warning/20 flex items-center justify-center">
+                  <Zap className="w-3 h-3 text-warning" />
+                </div>
+                <h3 className="font-medium text-sm">Validation Rules</h3>
+                <div className="h-px bg-gradient-to-r from-border to-transparent flex-1 ml-2" />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addValidationRule}
+                className="gap-1.5 bg-warning/5 hover:bg-warning/10 text-warning border-warning/20 hover:border-warning/40 transition-all hover:scale-105"
+              >
+                <Plus className="w-3 h-3" />
+                Add Rule
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              {selectedField.validationRules?.map((rule, index) => (
+                <div
+                  key={rule.id}
+                  className="group flex items-center gap-3 p-3 rounded-lg bg-muted/20 border border-border/30 hover:bg-muted/30 hover:border-border/50 transition-all"
+                >
+                  <div className="flex-1 space-y-2">
+                    <div className="flex gap-2 flex-col">
+                      <div>
+                        <Label className="text-sm font-medium">Type</Label>
+                        <Select
+                          value={rule.type}
+                          onValueChange={(value) =>
+                            updateValidationRule(rule.id, {
+                              type: value as any,
+                            })
+                          }
+                        >
+                          <SelectTrigger className="glass">
+                            <SelectValue placeholder="Select Rule" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="minLength">
+                              Min Length
+                            </SelectItem>
+                            <SelectItem value="maxLength">
+                              Max Length
+                            </SelectItem>
+                            <SelectItem value="pattern">
+                              Pattern (Regex)
+                            </SelectItem>
+                            <SelectItem value="custom">Custom</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">Value</Label>
+
+                        <Input
+                          value={rule.value}
+                          onChange={(e) =>
+                            updateValidationRule(rule.id, {
+                              value: e.target.value,
+                            })
+                          }
+                          placeholder={
+                            rule.type === "custom"
+                              ? "Custom validation expression like phone , url and email."
+                              : "Value"
+                          }
+                          className="text-sm border-transparent focus:border-warning group-hover:border-border/30 transition-all flex-1"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Message</Label>
+                      <Input
+                        value={rule.message}
+                        onChange={(e) =>
+                          updateValidationRule(rule.id, {
+                            message: e.target.value,
+                          })
+                        }
+                        placeholder="Error message"
+                        className="text-xs border-transparent focus:border-warning group-hover:border-border/30 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeValidationRule(rule.id)}
+                    className="text-muted-foreground hover:text-destructive shrink-0 opacity-50 group-hover:opacity-100 transition-all hover:bg-destructive/10"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              ))}
+
+              {(!selectedField.validationRules ||
+                selectedField.validationRules.length === 0) && (
+                <div className="text-center py-6 text-muted-foreground text-sm">
+                  <Zap className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  No validation rules yet. Add one to get started.
+                </div>
+              )}
+            </div>
+          </Card>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Send, Eye, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 import { FormFieldRenderer } from "./form-field-renderer";
+import { validateFieldValue } from "@/lib/validation";
 
 export function FormPreview() {
   const { fields } = useFormStore();
@@ -31,6 +32,16 @@ export function FormPreview() {
     fields.forEach((field) => {
       if (field.required && !formData[field.id]) {
         newErrors[field.id] = `${field.label} is required`;
+      }
+      if (field.validationRules) {
+        const result = validateFieldValue(
+          formData[field.id],
+          field.validationRules,
+          field.required
+        );
+        if (!result.isValid) {
+          newErrors[field.id] = result.message as string;
+        }
       }
     });
 
