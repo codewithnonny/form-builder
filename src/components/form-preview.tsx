@@ -1,57 +1,49 @@
-import { useState } from 'react';
-import { useFormStore } from '@/lib/store';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { 
-  Send, 
-  Eye, 
-  CheckCircle2,
-  AlertCircle,
-  Sparkles
-} from 'lucide-react';
-import { FormFieldRenderer } from './form-field-renderer';
+import { useState } from "react";
+import { useFormStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Send, Eye, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
+import { FormFieldRenderer } from "./form-field-renderer";
 
 export function FormPreview() {
   const { fields } = useFormStore();
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-
-  console.log(fields)
-
   const handleFieldChange = (fieldId: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [fieldId]: value
+      [fieldId]: value,
     }));
     if (errors[fieldId]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [fieldId]: ''
+        [fieldId]: "",
       }));
     }
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
-    fields.forEach(field => {
+
+    fields.forEach((field) => {
       if (field.required && !formData[field.id]) {
         newErrors[field.id] = `${field.label} is required`;
       }
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
-      console.log('Form submitted:', formData);
+      console.log("Form submitted:", formData);
+      alert(JSON.stringify(formData, null, 2));
     }
   };
 
@@ -64,7 +56,8 @@ export function FormPreview() {
           </div>
           <h3 className="text-lg font-semibold mb-2">No Form to Preview</h3>
           <p className="text-muted-foreground text-sm mb-6">
-            Add some components to your form first, then preview how it will look to users.
+            Add some components to your form first, then preview how it will
+            look to users.
           </p>
           <Button variant="outline" onClick={() => window.history.back()}>
             Back to Builder
@@ -101,7 +94,7 @@ export function FormPreview() {
                   value={formData[field.id]}
                   onChange={(value) => handleFieldChange(field.id, value)}
                 />
-                
+
                 {errors[field.id] && (
                   <div className="flex items-center gap-2 text-destructive text-sm">
                     <AlertCircle className="w-4 h-4" />
@@ -115,10 +108,10 @@ export function FormPreview() {
             <div className="flex items-center justify-between pt-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckCircle2 className="w-4 h-4" />
-                {fields.length} field{fields.length !== 1 ? 's' : ''} •
-                {fields.filter(f => f.required).length} required
+                {fields.length} field{fields.length !== 1 ? "s" : ""} •
+                {fields.filter((f) => f.required).length} required
               </div>
-              
+
               <Button type="submit" className="gap-2">
                 <Send className="w-4 h-4" />
                 Submit Form

@@ -1,11 +1,11 @@
-export type FormFieldType = 
-  | 'text'
-  | 'textarea'
-  | 'select'
-  | 'checkbox'
-  | 'radio'
-  | 'number'
-  | 'email';
+export type FormFieldType =
+  | "text"
+  | "textarea"
+  | "select"
+  | "checkbox"
+  | "radio"
+  | "number"
+  | "email";
 
 export interface FormFieldOption {
   id: string;
@@ -27,8 +27,8 @@ export interface FormField {
     message?: string;
   };
   style?: {
-    width: 'full' | 'half' | 'third';
-    margin?: 'sm' | 'md' | 'lg';
+    width: "full" | "half" | "third";
+    margin?: "sm" | "md" | "lg";
   };
 }
 
@@ -38,7 +38,7 @@ export interface FormComponent {
   label: string;
   icon: string;
   description: string;
-  category: 'input' | 'selection' | 'layout';
+  category: "input" | "selection" | "layout";
 }
 
 export interface FormState {
@@ -46,9 +46,7 @@ export interface FormState {
   selectedFieldId: string | null;
   isPreviewMode: boolean;
   draggedComponent: FormComponent | null;
-  
-  // Actions
-  addField: (field: Omit<FormField, 'id'>) => void;
+  addField: (field: Omit<FormField, "id">) => void;
   removeField: (id: string) => void;
   updateField: (id: string, updates: Partial<FormField>) => void;
   reorderFields: (fromIndex: number, toIndex: number) => void;

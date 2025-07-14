@@ -9,6 +9,7 @@ import {
 } from "@dnd-kit/sortable";
 import { SortableFormField } from "./sortable-form-field";
 import { EmptyCanvas } from "./empty-canvas";
+import { cn } from "@/lib/utils";
 
 const FormBuilderCanvas = () => {
   const { fields } = useFormStore();
@@ -23,13 +24,11 @@ const FormBuilderCanvas = () => {
 
       <div
         ref={setNodeRef}
-        className={`
-          min-h-full p-4 md:p-8 transition-all duration-300 ease-out relative ${
-            isOver
-              ? "bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-sm"
-              : ""
-          }
-        `}
+        className={cn(
+          "min-h-full p-4 md:p-8 transition-all duration-300 ease-out relative",
+          isOver &&
+            "bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-sm"
+        )}
       >
         {isOver && (
           <div className="absolute inset-4 md:inset-8 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 flex items-center justify-center pointer-events-none animate-pulse">
